@@ -82,7 +82,8 @@ class RabbitMQ(object):
                                 'closed': self._counters[self.CONN_CLOSED]},
                 'channels': {'opened': self._counters[self.CHAN_OPENED],
                              'closed': self._counters[self.CHAN_CLOSED]},
-                'publishes': self._counters[self.PUBLISHED]}
+                'publishes': self._counters[self.PUBLISHED],
+                'queue_size': len(self._queued_messages)}
 
     def _connect(self):
         """Connect to RabbitMQ"""

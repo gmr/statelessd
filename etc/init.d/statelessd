@@ -28,7 +28,7 @@ fi
 
 
 # Configuration file
-TINMAN_CONF="${TINMAN_CONF:-etc/statelessd.yaml}"
+TINMAN_CONF="${TINMAN_CONF:-/etc/statelessd.yaml}"
 
 # Run as this user
 TINMAN_USER="${TINMAN_USER:-nginx}"
@@ -73,7 +73,7 @@ start() {
     return 1
   fi
 
-  /usr/bin/python2.6 ${TINMAN_APP} ${TINMAN_OPTS}
+  ${TINMAN_APP} ${TINMAN_OPTS}
   RETVAL=$?
 
   echo
