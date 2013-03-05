@@ -15,12 +15,12 @@ It currently does not do any error handling beyond disconnects. While it will lo
 
 Statelessd uses HTTP Basic Auth for obtaining the credentials to connect to RabbitMQ as. The Virtual Host, Exchange and Routing Key come from the URI path and the message body and properties are parsed from x-www-form-urlencoded body values.
 
-URI Format
-----------
-    scheme://host:port/VIRTUAL_HOST/EXCHANGE/ROUTING-KEY
+### URL Format
 
-Valid POST x-www-form-urlencoded keys
--------------------------------------
+    scheme://host[:port]/<VIRTUAL_HOST>/<EXCHANGE>/<ROUTING-KEY>
+
+### Valid POST x-www-form-urlencoded keys
+
 * body
 * app_id
 * content_encoding
@@ -38,8 +38,7 @@ Valid POST x-www-form-urlencoded keys
 
 ## Examples
 
-Command Line CURL
------------------
+### Command Line CURL
 
     curl --verbose -d body=hi -d "content-type=text/plain" http://guest:guest@localhost:8000/test/test/foo
 
@@ -67,8 +66,7 @@ Command Line CURL
     * Connection #0 to host localhost left intact
     * Closing connection #0
 
-PHP Example using CURL
-----------------------
+### PHP Example using CURL
 
     <?php
     $virtualHost = '%2f'; // This is the default / virtual host URL quoted
@@ -107,8 +105,7 @@ PHP Example using CURL
       echo $result;
     }
 
-Configuration Example
----------------------
+### Configuration Example
 
     %YAML 1.2
     ---
