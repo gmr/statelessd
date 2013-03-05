@@ -36,6 +36,46 @@ Statelessd uses HTTP Basic Auth for obtaining the credentials to connect to Rabb
 * type
 * user_id
 
+## Stats
+
+The /stats URI will return data collected about the runtime state for a single statelessd backend process. The data collected contains both process information and information detailing publishing numbers. The following example illustrates the types of data available:
+
+    {
+        "block": {
+            "input": 0,
+            "output": 0
+        },
+        "connections": {
+            "messaging:www": {
+                "channels": {
+                    "closed": 0,
+                    "opened": 1
+                },
+                "connected": true,
+                "connections": {
+                    "closed": 0,
+                    "opened": 1
+                },
+                "publishes": 11
+            }
+        },
+        "context_switches": 46,
+        "cpu_time": {
+            "system": 0.056991,
+            "user": 0.312952
+        },
+        "memory_usage": 53752,
+        "page_faults": {
+            "major": 0,
+            "minor": 10366
+        },
+        "page_size": 4096,
+        "port": 8000,
+        "signals_received": 0,
+        "swap_outs": 0,
+        "timestamp": 1362457811
+    }
+
 ## Examples
 
 ### Command Line CURL
