@@ -18,11 +18,13 @@ with open('MANIFEST.in', 'w') as handle:
             handle.write('include %s\n' % filename)
 
 setup(name='statelessd',
-      version='0.0.1',
+      version='0.0.2',
       description='Stateless HTTP -> AMQP gateway',
       url='http://github.com/gmr/statelessd',
       packages=['statelessd'],
       author='Gavin M. Roy',
       author_email='gmr@meetme.com',
       license='BSD',
+      data_files=[(key, data_files[key]) for key in data_files.keys()],
+      zip_safe=True,
       install_requires=['tinman', 'pika'])
