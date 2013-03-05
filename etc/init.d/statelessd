@@ -1,0 +1,138 @@
+#!/bin/bash
+# chkconfig: 2345 99 60
+# description: Statelessd Application
+# processname: tinman
+# config: /etc/sysconfig/statelessd
+# pidfile: /var/run/statelessd.pid
+
+# Source function library.
+. /etc/init.d/functions
+
+# Tinman App
+TINMAN_APP="/usr/bin/tinman"
+
+# Installation dir
+TINMAN_DIR="/usr/bin"
+
+# PID File
+TINMAN_PID_FILE="/var/run/statelessd/statelessd.pid"
+
+# Additional arguments
+TINMAN_OPTS=""
+
+
+if [ -f /etc/sysconfig/statelessd ]; then
+  # Include configuration
+  . /etc/sysconfig/statelessd
+fi
+
+
+# Configuration file
+TINMAN_CONF="${TINMAN_CONF:-etc/statelessd.yaml}"
+
+# Run as this user
+TINMAN_USER="${TINMAN_USER:-nginx}"
+
+
+if [ ! -d "${TINMAN_DIR}" ]; then
+  echo -n $"cannot find statelessd installation dir: '${TINMAN_DIR}'"
+  failure $"cannot find statelessd installation dir: '${TINMAN_DIR}'"
+  echo
+  exit 1
+fi
+
+TINMAN_OPTS="-c ${TINMAN_CONF} ${TINMAN_OPTS}"
+
+prog="tinman"
+
+dostatus() {
+  [ -e "${TINMAN_PID_FILE}" ] || return 1
+
+  local pid=$(cat ${TINMAN_PID_FILE})
+  [ -d /proc/${pid} ] || return 1
+
+  [ -z "$(grep tinman /proc/${pid}/cmdline)" ] && return 1
+  return 0
+}
+
+start() {
+  if [ ${EUID} -ne 0 ]; then
+    echo -n $"you must be root"
+    failure $"you must be root"
+    echo
+    return 1
+  fi
+
+  echo -n $"Starting ${prog}: "
+
+  dostatus
+  if [ $? -eq 0 ]; then
+    echo -n $"cannot start $prog: already running (pid: $(cat ${TINMAN_PID_FILE}))";
+    failure $"cannot start $prog: already running (pid: $(cat ${TINMAN_PID_FILE}))";
+    echo
+    return 1
+  fi
+
+  /usr/bin/python2.6 ${TINMAN_APP} ${TINMAN_OPTS}
+  RETVAL=$?
+
+  echo
+  return ${RETVAL}
+}
+
+stop() {
+  if [ ${EUID} -ne 0 ]; then
+    echo -n $"you must be root"
+    failure $"you must be root"
+    echo
+    return 1
+  fi
+
+  echo -n $"Stopping ${prog}: "
+
+  dostatus
+  if [ $? -ne 0 ]; then
+    echo -n $"cannot stop $prog: not running"
+    failure $"cannot stop $prog: not running"
+    echo
+    return 1
+  fi
+
+  killproc -p "${TINMAN_PID_FILE}" "${TINMAN_APP}"
+  RETVAL=$?
+  [ $RETVAL -eq 0 ] && rm -f ${TINMAN_PID_FILE}
+  echo
+  return $RETVAL
+}
+
+restart() {
+  stop
+  start
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    restart
+    ;;
+  status)
+    dostatus
+    if [ $? -eq 0 ]; then
+      echo $"$prog: running..."
+    else
+      echo $"$prog: not running"
+    fi
+    ;;
+  *)
+    echo $"Usage: $0 {start|stop|status|restart}"
+    RETVAL=2
+    ;;
+esac
+
+exit $RETVAL
+

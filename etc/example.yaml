@@ -1,0 +1,69 @@
+%YAML 1.2
+---
+Daemon:
+  pidfile: /var/run/statelessd/statelessd.pid
+  user: nginx
+
+Application:
+  debug: False
+  xsrf_cookies: false
+  paths:
+    base: /Users/gmr/Dropbox/Source/statelessd
+    static: static
+    templates: templates
+  rabbitmq:
+    host: localhost
+    port: 5672
+
+HTTPServer:
+  no_keep_alive: false
+  ports: [8000, 8001, 8002, 8003, 8004]
+  xheaders: false
+
+Routes:
+ - ['/([^/]+)/([^/]+)/([^/]+)', statelessd.Publisher]
+ - [/stats, statelessd.Stats]
+ - [/, statelessd.Dashboard]
+
+Logging:
+  version: 1
+  formatters:
+    verbose:
+      format: '%(levelname) -10s %(asctime)s %(process)-6d %(processName) -35s %(threadName) -25s %(name) -35s %(funcName) -30s: %(message)s'
+      datefmt: '%Y-%m-%d %H:%M:%S'
+    syslog:
+      format: " %(levelname)s <PID %(process)d:%(processName)s> %(name)s.%(funcName)s(): %(message)s"
+  filters: []
+  handlers:
+    console:
+      class: logging.StreamHandler
+      formatter: verbose
+      debug_only: false
+    syslog:
+      class: logging.handlers.SysLogHandler
+      facility: daemon
+      address: /var/run/syslog
+      formatter: syslog
+  loggers:
+    clihelper:
+      level: WARNING
+      propagate: true
+      handlers: [console, syslog]
+    pika:
+      level: INFO
+      propagate: true
+      handlers: [console, syslog]
+    statelessd:
+      level: INFO
+      propagate: true
+      handlers: [console, syslog]
+    tinman:
+      level: INFO
+      propagate: true
+      handlers: [console, syslog]
+    tornado:
+      level: WARNING
+      propagate: true
+      handlers: [console, syslog]
+  disable_existing_loggers: true
+  incremental: false

@@ -1,0 +1,17 @@
+*.py[cod]
+
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+
+# Installer logs
+pip-log.txt
+
+.idea
+.DS_Store
