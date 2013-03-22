@@ -20,7 +20,7 @@ class RabbitMQ(object):
     CHAN_CLOSED = 'channel_closed'
     PUBLISHED = 'published'
 
-    COUNTERS = [CONN_OPENED, CONN_CLOSED, CHAN_OPENED, CHAN_CLOSED]
+    COUNTERS = [CONN_OPENED, CONN_CLOSED, CHAN_OPENED, CHAN_CLOSED, PUBLISHED]
 
     def __init__(self, host, port, username, password, virtual_host):
         """Create a new instance of the RabbitMQ object and connect to RabbitMQ
