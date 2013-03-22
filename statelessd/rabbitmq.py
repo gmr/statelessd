@@ -2,7 +2,6 @@
 rabbitmq
 
 """
-import collections
 import logging
 import pika
 from pika.adapters import tornado_connection as pika_adapter
@@ -43,7 +42,7 @@ class RabbitMQ(object):
         self._virtual_host = virtual_host
 
         # Initialize the counters
-        self._counters = collections.Counter()
+        self._counters = dict()
         for key in self.COUNTERS:
             self._counters[key] = 0
 
