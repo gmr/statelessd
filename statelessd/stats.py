@@ -30,7 +30,8 @@ class Stats(base.RequestHandler):
 
         """
         usage = resource.getrusage(resource.RUSAGE_SELF)
-        return {'port': self.application.port,
+        return {'host': self.application.host,
+                'port': self.application.port,
                 'requests': self.application.counters,
                 'timestamp': int(time.time()),
                 'block': {'input': usage.ru_inblock,
