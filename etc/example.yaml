@@ -17,7 +17,7 @@ Application:
 
 HTTPServer:
   no_keep_alive: false
-  ports: [8000, 8001, 8002, 8003, 8004]
+  ports: [8000] #, 8001, 8002, 8003, 8004]
   xheaders: false
 
 Routes:
@@ -29,7 +29,7 @@ Logging:
   version: 1
   formatters:
     verbose:
-      format: '%(levelname) -10s %(asctime)s %(process)-6d %(processName) -35s %(threadName) -25s %(name) -35s %(funcName) -30s: %(message)s'
+      format: '%(levelname) -10s %(asctime)s %(processName)-20s %(name) -35s %(funcName) -30s: %(message)s'
       datefmt: '%Y-%m-%d %H:%M:%S'
     syslog:
       format: " %(levelname)s <PID %(process)d:%(processName)s> %(name)s.%(funcName)s(): %(message)s"
@@ -51,6 +51,14 @@ Logging:
       handlers: [console, syslog]
     pika:
       level: INFO
+      propagate: true
+      handlers: [console, syslog]
+    pika.adapters:
+      level: DEBUG
+      propagate: true
+      handlers: [console, syslog]
+    pika.connection:
+      level: DEBUG
       propagate: true
       handlers: [console, syslog]
     statelessd:

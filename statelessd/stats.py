@@ -5,12 +5,13 @@ stats
 import logging
 import resource
 import time
-from tornado import web
+
+from statelessd import base
 
 LOGGER = logging.getLogger(__name__)
 
 
-class Stats(web.RequestHandler):
+class Stats(base.RequestHandler):
     """Gather stats counters from RabbitMQ objects and return as JSON object"""
 
     def initialize(self):
@@ -30,6 +31,7 @@ class Stats(web.RequestHandler):
         """
         usage = resource.getrusage(resource.RUSAGE_SELF)
         return {'port': self.application.port,
+                'requests': self.application.counters,
                 'timestamp': int(time.time()),
                 'block': {'input': usage.ru_inblock,
                           'output': usage.ru_oublock},

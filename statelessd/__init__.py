@@ -2,7 +2,7 @@
 Stateless HTTP -> AMQP publishing
 
 """
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 
 from statelessd.dashboard import Dashboard
 from statelessd.publisher import Publisher

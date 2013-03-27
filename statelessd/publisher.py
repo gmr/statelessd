@@ -1,16 +1,17 @@
 """
-Request
+Publishing Request Handler
 
 """
 import base64
 import logging
+
+from statelessd import base
 from statelessd import rabbitmq
-from tornado import web
 
 LOGGER = logging.getLogger(__name__)
 
 
-class Publisher(web.RequestHandler):
+class Publisher(base.RequestHandler):
     """HTTP -> AMQP Pubishing Request Handler"""
     AUTHENTICATE = 'WWW-Authenticate'
     INT_PROPERTIES = ['delivery_mode', 'priority', 'timestamp']
@@ -80,6 +81,7 @@ class Publisher(web.RequestHandler):
         401 if it is not.
 
         """
+        super(Publisher, self).prepare()
         self._username, self._password = None, None
         auth_header = self.request.headers.get('Authorization')
         if not auth_header or not auth_header.startswith('Basic '):
@@ -98,9 +100,7 @@ class Publisher(web.RequestHandler):
         :param str routing_key: The routing key to publish with
 
         """
-        rabbitmq = self.get_rabbitmq(self._username,
-                                     self._password,
-                                     virtual_host)
+        rmq = self.get_rabbitmq(self._username, self._password, virtual_host)
 
         # Map the properties to a dict for publishing
         properties = dict()
@@ -113,8 +113,13 @@ class Publisher(web.RequestHandler):
                     properties[key] = value
 
         # Publish the message
-        rabbitmq.publish(exchange, routing_key, properties,
-                         self.get_argument('body', None))
+        try:
+            rmq.publish(exchange, routing_key, properties,
+                        self.get_argument('body', None))
+        except rabbitmq.MessageDeniedError as error:
+            LOGGER.critical('Message publish was denied: %s', error)
+            # request failed due to failure of a previous request
+            return self.set_status(424)
 
         # Set the status
         self.set_status(204)
