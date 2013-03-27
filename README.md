@@ -1,13 +1,13 @@
 statelessd
 ==========
 
-statelessd is a stateless HTTP to AMQP publishing gateway prototype in Python.
+statelessd is a stateless HTTP to AMQP publishing gateway.
 
 The goal is to allow for persistent connections to RabbitMQ for systems and languages that do not facilitate long-running persisted connections like PHP.
 
 It is meant to be run on the same server as any RabbitMQ you intend to publish, or at least it only has the ability to connect to a single RabbitMQ server which, by default is localhost, but can be configured.
 
-You can run any number of statelessd backends, binding to specific port ranges as configured in the HTTPServer -> ports configuration directive. In testing, I run this behind nginx.
+You can run any number of statelessd backends, binding to specific port ranges as configured in the HTTPServer -> ports configuration directive. In production, I run this behind nginx.
 
 It currently does not do any error handling beyond disconnects. While it will log disconnections, it will not prune any temporarily queued messages it is holding until it can connect to RabbitMQ. Therefore it is possible to lose messages if the user specified does not have access to the virtual host specified or if the password is wrong.
 
@@ -41,39 +41,74 @@ Statelessd uses HTTP Basic Auth for obtaining the credentials to connect to Rabb
 The /stats URI will return data collected about the runtime state for a single statelessd backend process. The data collected contains both process information and information detailing publishing numbers. The following example illustrates the types of data available:
 
     {
+        "page_faults": {
+            "major": 0,
+            "minor": 26193
+        },
+        "cpu_time": {
+            "user": 10448.162637,
+            "system": 784.450745
+        },
+        "memory_usage": 0,
+        "timestamp": 1364403057,
+        "context_switches": 7278258,
+        "swap_outs": 0,
+        "page_size": 4096,
+        "connections": {
+            "vhost0:www": {
+                "connections": {
+                    "opened": 1,
+                    "closed": 0
+                },
+                "channels": {
+                    "opened": 1,
+                    "closed": 0
+                },
+                "connected": true,
+                "publishes": 2157007,
+                "queue_size": 0
+            },
+            "vhost1:www": {
+                "connections": {
+                    "opened": 1,
+                    "closed": 0
+                },
+                "channels": {
+                    "opened": 1,
+                    "closed": 0
+                },
+                "connected": true,
+                "publishes": 4324475,
+                "queue_size": 0
+            },
+            "vhost2:www": {
+                "connections": {
+                    "opened": 1,
+                    "closed": 0
+                },
+                "channels": {
+                    "opened": 1,
+                    "closed": 0
+                },
+                "connected": true,
+                "publishes": 865,
+                "queue_size": 0
+            }
+        },
+        "requests": {
+            "response.204": 6482360,
+            "response.200": 2547,
+            "processing_time": 7926.826567411423,
+            "response.401": 1175,
+            "method.POST": 6483535,
+            "method.GET": 2548
+        },
+        "port": 8011,
         "block": {
             "input": 0,
             "output": 0
         },
-        "connections": {
-            "messaging:www": {
-                "channels": {
-                    "closed": 0,
-                    "opened": 1
-                },
-                "connected": true,
-                "connections": {
-                    "closed": 0,
-                    "opened": 1
-                },
-                "publishes": 11
-            }
-        },
-        "context_switches": 46,
-        "cpu_time": {
-            "system": 0.056991,
-            "user": 0.312952
-        },
-        "memory_usage": 53752,
-        "page_faults": {
-            "major": 0,
-            "minor": 10366
-        },
-        "page_size": 4096,
-        "port": 8000,
-        "signals_received": 0,
-        "swap_outs": 0,
-        "timestamp": 1362457811
+        "signals_received": 0
     }
 
 ## Examples
