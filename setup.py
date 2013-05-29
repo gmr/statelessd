@@ -18,7 +18,7 @@ with open('MANIFEST.in', 'w') as handle:
             handle.write('include %s\n' % filename)
 
 setup(name='statelessd',
-      version='0.0.5',
+      version='0.0.6',
       description='Stateless HTTP -> AMQP gateway',
       url='http://github.com/gmr/statelessd',
       packages=['statelessd'],

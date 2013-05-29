@@ -4,6 +4,7 @@ stats
 """
 import logging
 import resource
+import socket
 import time
 
 from statelessd import base
@@ -22,6 +23,9 @@ class Stats(base.RequestHandler):
         super(Stats, self).initialize()
         if not hasattr(self.application, 'rabbitmq'):
             setattr(self.application, 'rabbitmq', dict())
+        if not hasattr(self.application, 'host'):
+            setattr(self.application, 'host',
+                    socket.gethostname())
 
     def _base_stats(self):
         """Return base stats including resource utilization for this process.
