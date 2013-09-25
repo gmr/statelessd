@@ -3,7 +3,9 @@ statelessd
 
 statelessd is a stateless HTTP to AMQP publishing gateway.
 
-The goal is to allow for persistent connections to RabbitMQ for systems and languages that do not facilitate long-running persisted connections like PHP.
+[![PyPI version](https://badge.fury.io/py/statelessd.png)](http://badge.fury.io/py/statelessd) [![Downloads](https://pypip.in/d/statelessd/badge.png)](https://crate.io/packages/pamqp) [![Build Status](https://travis-ci.org/gmr/statelessd.png?branch=master)](https://travis-ci.org/gmr/statelessd)
+
+statlessd allows for persistent connections to RabbitMQ for systems and languages that do not facilitate long-running persisted connections like PHP.
 
 It is meant to be run on the same server as any RabbitMQ you intend to publish, or at least it only has the ability to connect to a single RabbitMQ server which, by default is localhost, but can be configured.
 
